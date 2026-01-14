@@ -1,4 +1,4 @@
-import { Search, User, Settings, ShoppingBag, Upload, Shield } from 'lucide-react';
+import { Search, User, ShoppingBag, Upload, Shield, LogOut, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -10,7 +10,9 @@ import {
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
 import { useApp } from '@/contexts/AppContext';
-import { UserRole } from '@/types/product';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 
 const roleIcons = {
   customer: ShoppingBag,
@@ -25,18 +27,40 @@ const roleLabels = {
 };
 
 export function Header() {
-  const { userRole, setUserRole, filters, setFilters } = useApp();
-  const RoleIcon = roleIcons[userRole];
+  const { filters, setFilters } = useApp();
+  const { user, signOut, loading } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const currentRole = user?.role || 'customer';
+  const RoleIcon = roleIcons[currentRole];
 
   const handleSearch = (value: string) => {
     setFilters({ ...filters, search: value });
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      toast({
+        title: 'Signed out',
+        description: 'You have been signed out successfully.',
+      });
+      navigate('/');
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Could not sign out. Please try again.',
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
       <div className="container flex h-16 items-center justify-between gap-4">
         {/* Logo */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
             <span className="font-serif text-xl font-bold text-primary-foreground">C</span>
           </div>
@@ -60,33 +84,38 @@ export function Header() {
           </div>
         </div>
 
-        {/* Role Switcher */}
+        {/* User Menu */}
         <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="gap-2">
-                <RoleIcon className="h-4 w-4" />
-                <span className="hidden sm:inline">{roleLabels[userRole]}</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48 bg-popover">
-              <DropdownMenuLabel>Switch View</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {(Object.keys(roleLabels) as UserRole[]).map((role) => {
-                const Icon = roleIcons[role];
-                return (
-                  <DropdownMenuItem
-                    key={role}
-                    onClick={() => setUserRole(role)}
-                    className={userRole === role ? 'bg-accent' : ''}
-                  >
-                    <Icon className="mr-2 h-4 w-4" />
-                    {roleLabels[role]}
-                  </DropdownMenuItem>
-                );
-              })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {loading ? (
+            <Button variant="outline" disabled>
+              <User className="h-4 w-4" />
+            </Button>
+          ) : user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <RoleIcon className="h-4 w-4" />
+                  <span className="hidden sm:inline">{user.name || user.email}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 bg-popover">
+                <DropdownMenuLabel className="flex items-center gap-2">
+                  <RoleIcon className="h-4 w-4" />
+                  {roleLabels[currentRole]}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button variant="outline" className="gap-2" onClick={() => navigate('/login')}>
+              <LogIn className="h-4 w-4" />
+              <span className="hidden sm:inline">Sign In</span>
+            </Button>
+          )}
         </div>
       </div>
     </header>
