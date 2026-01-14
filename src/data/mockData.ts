@@ -1,0 +1,116 @@
+import { Product, Category, Cluster } from '@/types/product';
+
+export const categories: Category[] = [
+  { id: '1', name: 'Traditional Textiles', description: 'Handwoven fabrics and traditional garments' },
+  { id: '2', name: 'Home Decor', description: 'Artisanal home decoration items' },
+  { id: '3', name: 'Jewelry', description: 'Handcrafted jewelry pieces' },
+  { id: '4', name: 'Pottery & Ceramics', description: 'Traditional pottery and ceramic art' },
+];
+
+export const clusters: Cluster[] = [
+  { id: '1', name: 'Chanderi Sarees', categoryId: '1', description: 'Famous Chanderi silk sarees' },
+  { id: '2', name: 'Block Print Fabrics', categoryId: '1', description: 'Hand block printed textiles' },
+  { id: '3', name: 'Brass Decor', categoryId: '2', description: 'Traditional brass decorations' },
+  { id: '4', name: 'Wooden Carvings', categoryId: '2', description: 'Hand carved wooden pieces' },
+  { id: '5', name: 'Silver Jewelry', categoryId: '3', description: 'Traditional silver ornaments' },
+  { id: '6', name: 'Terracotta', categoryId: '4', description: 'Terracotta pottery items' },
+];
+
+export const products: Product[] = [
+  {
+    id: '1',
+    name: 'Chanderi Silk Saree - Royal Blue',
+    category: '1',
+    cluster: '1',
+    price: 8500,
+    material: 'Silk & Cotton Blend',
+    size: '5.5m with Blouse',
+    moq: 5,
+    available: true,
+    images: ['https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800'],
+    description: 'Exquisite handwoven Chanderi saree featuring traditional motifs with gold zari border.',
+    createdAt: '2024-01-15',
+    updatedAt: '2024-01-15',
+    retailerId: 'R1'
+  },
+  {
+    id: '2',
+    name: 'Block Print Cotton Dupatta',
+    category: '1',
+    cluster: '2',
+    price: 1200,
+    material: 'Pure Cotton',
+    size: '2.5m x 1m',
+    moq: 20,
+    available: true,
+    images: ['https://images.unsplash.com/photo-1594040226829-7f251ab46d80?w=800'],
+    description: 'Hand block printed dupatta with natural vegetable dyes and intricate patterns.',
+    createdAt: '2024-01-10',
+    updatedAt: '2024-01-12',
+    retailerId: 'R1'
+  },
+  {
+    id: '3',
+    name: 'Brass Diya Set',
+    category: '2',
+    cluster: '3',
+    price: 2800,
+    material: 'Pure Brass',
+    size: '4 inches each',
+    moq: 10,
+    available: true,
+    images: ['https://images.unsplash.com/photo-1605377347952-aa8f5a5e01ec?w=800'],
+    description: 'Set of 6 handcrafted brass diyas with traditional carved designs.',
+    createdAt: '2024-01-08',
+    updatedAt: '2024-01-08',
+    retailerId: 'R2'
+  },
+  {
+    id: '4',
+    name: 'Carved Wooden Elephant',
+    category: '2',
+    cluster: '4',
+    price: 4500,
+    material: 'Rosewood',
+    size: '12 inches',
+    moq: 3,
+    available: false,
+    images: ['https://images.unsplash.com/photo-1602472097151-72eeec7a3185?w=800'],
+    description: 'Intricately hand-carved rosewood elephant with fine details.',
+    createdAt: '2024-01-05',
+    updatedAt: '2024-01-14',
+    retailerId: 'R2'
+  },
+  {
+    id: '5',
+    name: 'Silver Jhumka Earrings',
+    category: '3',
+    cluster: '5',
+    price: 3200,
+    material: '925 Sterling Silver',
+    size: '3 inches drop',
+    moq: 12,
+    available: true,
+    images: ['https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800'],
+    description: 'Traditional jhumka earrings handcrafted with oxidized silver finish.',
+    createdAt: '2024-01-02',
+    updatedAt: '2024-01-02',
+    retailerId: 'R3'
+  },
+  {
+    id: '6',
+    name: 'Terracotta Flower Pot Set',
+    category: '4',
+    cluster: '6',
+    price: 1800,
+    material: 'Natural Terracotta',
+    size: '6, 8, 10 inches',
+    moq: 8,
+    available: true,
+    images: ['https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=800'],
+    description: 'Set of 3 hand-painted terracotta pots with traditional designs.',
+    createdAt: '2024-01-01',
+    updatedAt: '2024-01-10',
+    retailerId: 'R3'
+  },
+];
