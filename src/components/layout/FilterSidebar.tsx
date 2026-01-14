@@ -64,14 +64,14 @@ export function FilterSidebar() {
       <div className="space-y-2">
         <Label className="text-sm font-medium">Category</Label>
         <Select
-          value={filters.category}
-          onValueChange={(value) => setFilters({ ...filters, category: value, cluster: '' })}
+          value={filters.category || 'all'}
+          onValueChange={(value) => setFilters({ ...filters, category: value === 'all' ? '' : value, cluster: '' })}
         >
           <SelectTrigger className="bg-background">
             <SelectValue placeholder="All Categories" />
           </SelectTrigger>
           <SelectContent className="bg-popover">
-            <SelectItem value="">All Categories</SelectItem>
+            <SelectItem value="all">All Categories</SelectItem>
             {categories.map((cat) => (
               <SelectItem key={cat.id} value={cat.id}>
                 {cat.name}
@@ -85,14 +85,14 @@ export function FilterSidebar() {
       <div className="space-y-2">
         <Label className="text-sm font-medium">Product Type</Label>
         <Select
-          value={filters.cluster}
-          onValueChange={(value) => setFilters({ ...filters, cluster: value })}
+          value={filters.cluster || 'all'}
+          onValueChange={(value) => setFilters({ ...filters, cluster: value === 'all' ? '' : value })}
         >
           <SelectTrigger className="bg-background">
             <SelectValue placeholder="All Types" />
           </SelectTrigger>
           <SelectContent className="bg-popover">
-            <SelectItem value="">All Types</SelectItem>
+            <SelectItem value="all">All Types</SelectItem>
             {filteredClusters.map((cluster) => (
               <SelectItem key={cluster.id} value={cluster.id}>
                 {cluster.name}
