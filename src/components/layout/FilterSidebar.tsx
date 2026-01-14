@@ -81,18 +81,18 @@ export function FilterSidebar() {
         </Select>
       </div>
 
-      {/* Cluster */}
+      {/* Region/Cluster */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Product Type</Label>
+        <Label className="text-sm font-medium">Region</Label>
         <Select
           value={filters.cluster || 'all'}
           onValueChange={(value) => setFilters({ ...filters, cluster: value === 'all' ? '' : value })}
         >
           <SelectTrigger className="bg-background">
-            <SelectValue placeholder="All Types" />
+            <SelectValue placeholder="All Regions" />
           </SelectTrigger>
           <SelectContent className="bg-popover">
-            <SelectItem value="all">All Types</SelectItem>
+            <SelectItem value="all">All Regions</SelectItem>
             {filteredClusters.map((cluster) => (
               <SelectItem key={cluster.id} value={cluster.id}>
                 {cluster.name}

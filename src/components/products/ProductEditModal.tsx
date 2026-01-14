@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { ImageUpload } from './ImageUpload';
 
 interface ProductEditModalProps {
   product?: Product;
@@ -114,13 +115,13 @@ export function ProductEditModal({ product, open, onClose }: ProductEditModalPro
             </div>
 
             <div className="space-y-2">
-              <Label>Product Type</Label>
+              <Label>Region/Cluster</Label>
               <Select
                 value={formData.cluster}
                 onValueChange={(value) => handleChange('cluster', value)}
               >
                 <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder="Select region" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover">
                   {filteredClusters.map((cluster) => (
@@ -184,13 +185,11 @@ export function ProductEditModal({ product, open, onClose }: ProductEditModalPro
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="image">Image URL</Label>
-            <Input
-              id="image"
-              value={formData.images[0]}
-              onChange={(e) => handleChange('images', [e.target.value])}
-              placeholder="Enter image URL"
-              className="bg-background"
+            <Label>Product Images</Label>
+            <ImageUpload
+              value={formData.images}
+              onChange={(urls) => handleChange('images', urls)}
+              maxImages={5}
             />
           </div>
 
