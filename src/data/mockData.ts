@@ -7,13 +7,16 @@ export const categories: Category[] = [
   { id: '4', name: 'Pottery & Ceramics', description: 'Traditional pottery and ceramic art' },
 ];
 
+// Clusters represent geographical locations/regions
 export const clusters: Cluster[] = [
-  { id: '1', name: 'Chanderi Sarees', categoryId: '1', description: 'Famous Chanderi silk sarees' },
-  { id: '2', name: 'Block Print Fabrics', categoryId: '1', description: 'Hand block printed textiles' },
-  { id: '3', name: 'Brass Decor', categoryId: '2', description: 'Traditional brass decorations' },
-  { id: '4', name: 'Wooden Carvings', categoryId: '2', description: 'Hand carved wooden pieces' },
-  { id: '5', name: 'Silver Jewelry', categoryId: '3', description: 'Traditional silver ornaments' },
-  { id: '6', name: 'Terracotta', categoryId: '4', description: 'Terracotta pottery items' },
+  { id: '1', name: 'Nalbari', categoryId: '1', description: 'Nalbari district artisans' },
+  { id: '2', name: 'Kamrup', categoryId: '1', description: 'Kamrup district artisans' },
+  { id: '3', name: 'Gopalpur', categoryId: '2', description: 'Gopalpur region artisans' },
+  { id: '4', name: 'Sualkuchi', categoryId: '1', description: 'Sualkuchi silk hub' },
+  { id: '5', name: 'Jorhat', categoryId: '3', description: 'Jorhat artisan cluster' },
+  { id: '6', name: 'Majuli', categoryId: '4', description: 'Majuli island artisans' },
+  { id: '7', name: 'Barpeta', categoryId: '2', description: 'Barpeta artisan cluster' },
+  { id: '8', name: 'Nagaon', categoryId: '3', description: 'Nagaon artisan cluster' },
 ];
 
 export const products: Product[] = [
