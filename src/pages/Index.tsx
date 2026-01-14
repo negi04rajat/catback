@@ -1,13 +1,25 @@
-import { useApp } from '@/contexts/AppContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Header } from '@/components/layout/Header';
 import { FilterSidebar } from '@/components/layout/FilterSidebar';
 import { ProductGrid } from '@/components/products/ProductGrid';
 import { AdminPanel } from '@/components/admin/AdminPanel';
 import { RetailerPanel } from '@/components/retailer/RetailerPanel';
+import { useApp } from '@/contexts/AppContext';
 
 const Index = () => {
-  const { userRole, getFilteredProducts } = useApp();
+  const { user, loading } = useAuth();
+  const { getFilteredProducts } = useApp();
   const products = getFilteredProducts();
+
+  const userRole = user?.role || 'customer';
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-pulse text-muted-foreground">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
