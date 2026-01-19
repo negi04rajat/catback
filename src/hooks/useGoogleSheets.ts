@@ -10,6 +10,9 @@ export function useGoogleSheets() {
     setLoading(true);
     setError(null);
     try {
+      if (!supabase) {
+        throw new Error('Supabase is not configured. Set VITE_SUPABASE_* env vars to load Google Sheets data.');
+      }
       const { data, error } = await supabase.functions.invoke('google-sheets', {
         body: { action: 'getAll', sheet: 'Products' }
       });
@@ -44,6 +47,9 @@ export function useGoogleSheets() {
     setLoading(true);
     setError(null);
     try {
+      if (!supabase) {
+        throw new Error('Supabase is not configured. Set VITE_SUPABASE_* env vars to load Google Sheets data.');
+      }
       const { data, error } = await supabase.functions.invoke('google-sheets', {
         body: { action: 'getAll', sheet: 'Categories' }
       });
@@ -68,6 +74,9 @@ export function useGoogleSheets() {
     setLoading(true);
     setError(null);
     try {
+      if (!supabase) {
+        throw new Error('Supabase is not configured. Set VITE_SUPABASE_* env vars to load Google Sheets data.');
+      }
       const { data, error } = await supabase.functions.invoke('google-sheets', {
         body: { action: 'getAll', sheet: 'Clusters' }
       });

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Header } from '@/components/layout/Header';
 import { FilterSidebar } from '@/components/layout/FilterSidebar';
@@ -7,9 +8,16 @@ import { RetailerPanel } from '@/components/retailer/RetailerPanel';
 import { useApp } from '@/contexts/AppContext';
 
 const Index = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, refreshUserRole } = useAuth();
   const { getFilteredProducts } = useApp();
   const products = getFilteredProducts();
+
+  // Refresh user role from Google Sheets when page loads
+  useEffect(() => {
+    if (user && !loading) {
+      refreshUserRole();
+    }
+  }, []); // Only run once on mount
 
   const userRole = user?.role || 'customer';
 

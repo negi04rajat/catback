@@ -14,6 +14,7 @@ export function useCloudinaryUpload() {
   useEffect(() => {
     const fetchConfig = async () => {
       try {
+        if (!supabase) return;
         const { data, error } = await supabase.functions.invoke('cloudinary-upload', {
           body: { action: 'getConfig' }
         });

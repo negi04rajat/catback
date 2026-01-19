@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
@@ -14,7 +13,6 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
-  const [role, setRole] = useState<'retailer' | 'admin'>('retailer');
   const [isLoading, setIsLoading] = useState(false);
   const { signUp } = useAuth();
   const navigate = useNavigate();
@@ -44,7 +42,7 @@ const Signup = () => {
     setIsLoading(true);
 
     try {
-      await signUp(email, password, name, role);
+      await signUp(email, password, name);
       toast({
         title: 'Account created!',
         description: 'Welcome to Artisan Catalogue.',
@@ -67,7 +65,7 @@ const Signup = () => {
         <CardHeader className="text-center">
           <CardTitle className="font-serif text-2xl">Create Account</CardTitle>
           <CardDescription>
-            Sign up as a retailer or admin to manage products
+            Create your account to browse the catalogue. Additional access can be granted by an admin.
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
@@ -93,18 +91,6 @@ const Signup = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="role">Account Type</Label>
-              <Select value={role} onValueChange={(v) => setRole(v as 'retailer' | 'admin')}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="retailer">Retailer</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
