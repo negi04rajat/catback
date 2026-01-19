@@ -12,7 +12,8 @@ serve(async (req) => {
 
   try {
     const CLOUDINARY_CLOUD_NAME = Deno.env.get('CLOUDINARY_CLOUD_NAME');
-    const CLOUDINARY_UPLOAD_PRESET = Deno.env.get('CLOUDINARY_UPLOAD_PRESET');
+    // Hardcoded preset name "catalog"
+    const CLOUDINARY_UPLOAD_PRESET = "catalog";
 
     if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
       throw new Error('Missing Cloudinary configuration');

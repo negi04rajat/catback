@@ -1,73 +1,50 @@
-import { useState, useCallback, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { useState, useCallback } from "react";
+import ImageKit from "imagekit-javascript";
+import imageCompression from "browser-image-compression";
 
-interface CloudinaryConfig {
-  cloudName: string;
-  uploadPreset: string;
-}
+const PUBLIC_KEY = "public_mFX/7mQzHpCgJmz9GpVHJIdSsMA=";
+const URL_ENDPOINT = "https://ik.imagekit.io/4rm3gcimn";
+
+const imagekit = new ImageKit({
+  publicKey: PUBLIC_KEY,
+  urlEndpoint: URL_ENDPOINT,
+});
 
 export function useCloudinaryUpload() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [config, setConfig] = useState<CloudinaryConfig | null>(null);
-
-  useEffect(() => {
-    const fetchConfig = async () => {
-      try {
-        if (!supabase) return;
-        const { data, error } = await supabase.functions.invoke('cloudinary-upload', {
-          body: { action: 'getConfig' }
-        });
-        if (error) throw error;
-        setConfig(data);
-      } catch (err: any) {
-        console.error('Failed to fetch Cloudinary config:', err);
-      }
-    };
-    fetchConfig();
-  }, []);
 
   const uploadImage = useCallback(async (file: File): Promise<string | null> => {
-    if (!config) {
-      setError('Cloudinary not configured');
-      return null;
-    }
-
     setUploading(true);
     setError(null);
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', config.uploadPreset);
-      formData.append('folder', 'catalogue');
+      // Compress image before uploading
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: 1,           // max size in MB
+        maxWidthOrHeight: 1920, // max width or height
+        useWebWorker: true,
+      });
 
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${config.cloudName}/image/upload`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      );
+      const response = imagekit.upload({
+        file: compressedFile,
+        fileName: compressedFile.name,
+        folder: "/catalogue",
+      });
 
-      if (!response.ok) {
-        throw new Error('Upload failed');
-      }
-
-      const data = await response.json();
-      return data.secure_url;
+      return response.url;
     } catch (err: any) {
       setError(err.message);
       return null;
     } finally {
       setUploading(false);
     }
-  }, [config]);
+  }, []);
 
   return {
     uploadImage,
     uploading,
     error,
-    isConfigured: !!config,
+    isConfigured: !!(PUBLIC_KEY && URL_ENDPOINT),
   };
 }
