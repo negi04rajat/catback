@@ -32,8 +32,12 @@ export function Header() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const currentRole = user?.role || 'customer';
-  const RoleIcon = roleIcons[currentRole];
+  const normalizedRole =
+  (user?.role?.toLowerCase() as keyof typeof roleIcons) || 'customer';
+
+  const RoleIcon = roleIcons[normalizedRole] || ShoppingBag;
+  const roleLabel = roleLabels[normalizedRole] || 'Customer';
+
 
   const handleSearch = (value: string) => {
     setFilters({ ...filters, search: value });
@@ -101,7 +105,7 @@ export function Header() {
               <DropdownMenuContent align="end" className="w-48 bg-popover">
                 <DropdownMenuLabel className="flex items-center gap-2">
                   <RoleIcon className="h-4 w-4" />
-                  {roleLabels[currentRole]}
+                  {roleLabel}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>

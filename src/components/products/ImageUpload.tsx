@@ -1,45 +1,27 @@
-import { useState, useRef } from "react";
-import { Upload, X, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useCloudinaryUpload } from "@/hooks/useCloudinaryUpload";
-import { toast } from "sonner";
+import { useState, useRef } from 'react';
+import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useCloudinaryUpload } from '@/hooks/useCloudinaryUpload';
+import { toast } from 'sonner';
 
 interface ImageUploadProps {
   value: string[];
   onChange: (urls: string[]) => void;
   maxImages?: number;
-  canUpload: boolean; // ✅ permission flag
 }
 
-export function ImageUpload({
-  value,
-  onChange,
-  maxImages = 5,
-  canUpload,
-}: ImageUploadProps) {
+export function ImageUpload({ value, onChange, maxImages = 5 }: ImageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Call hook always
-  const uploadHook = useCloudinaryUpload();
-
-  // Render guard for permission
-  if (!canUpload) return null;
-
-  // Safely destructure only if hook is truthy
-  if (!uploadHook) return null; // <-- added check here
-
-  const { uploadImage, uploading } = uploadHook;
-
+  const { uploadImage, uploading } = useCloudinaryUpload();
   const [dragOver, setDragOver] = useState(false);
 
   const handleFileSelect = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
-
     const remainingSlots = maxImages - value.filter(Boolean).length;
     const filesToUpload = Array.from(files).slice(0, remainingSlots);
 
     for (const file of filesToUpload) {
-      if (!file.type.startsWith("image/")) {
+      if (!file.type.startsWith('image/')) {
         toast.error(`${file.name} is not an image`);
         continue;
       }
@@ -50,10 +32,9 @@ export function ImageUpload({
       }
 
       const url = await uploadImage(file);
-
       if (url) {
         onChange([...value.filter(Boolean), url]);
-        toast.success("Image uploaded successfully");
+        toast.success('Image uploaded successfully');
       } else {
         toast.error(`Failed to upload ${file.name}`);
       }
@@ -76,7 +57,8 @@ export function ImageUpload({
   };
 
   const removeImage = (index: number) => {
-    onChange(value.filter((_, i) => i !== index));
+    const newImages = value.filter((_, i) => i !== index);
+    onChange(newImages);
   };
 
   return (
@@ -85,10 +67,7 @@ export function ImageUpload({
       {value.filter(Boolean).length > 0 && (
         <div className="grid grid-cols-3 gap-2">
           {value.filter(Boolean).map((url, index) => (
-            <div
-              key={index}
-              className="relative aspect-square rounded-lg overflow-hidden bg-muted"
-            >
+            <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-muted">
               <img
                 src={url}
                 alt={`Product ${index + 1}`}
@@ -97,7 +76,7 @@ export function ImageUpload({
               <button
                 type="button"
                 onClick={() => removeImage(index)}
-                className="absolute top-1 right-1 p-1 bg-destructive text-destructive-foreground rounded-full"
+                className="absolute top-1 right-1 p-1 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90 transition-colors"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -112,13 +91,12 @@ export function ImageUpload({
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
-          onClick={() => fileInputRef.current?.click()}
           className={`
-            border-2 border-dashed rounded-lg p-6 text-center cursor-pointer
-            transition-colors
-            ${dragOver ? "border-primary bg-primary/5" : "border-border"}
-            ${uploading ? "opacity-50 pointer-events-none" : ""}
+            border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer
+            ${dragOver ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}
+            ${uploading ? 'opacity-50 pointer-events-none' : ''}
           `}
+          onClick={() => fileInputRef.current?.click()}
         >
           <input
             ref={fileInputRef}
@@ -128,7 +106,7 @@ export function ImageUpload({
             className="hidden"
             onChange={(e) => handleFileSelect(e.target.files)}
           />
-
+          
           {uploading ? (
             <div className="flex flex-col items-center gap-2">
               <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -139,12 +117,10 @@ export function ImageUpload({
               <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                 <Upload className="w-6 h-6 text-primary" />
               </div>
-              <p className="text-sm font-medium">
-                Click to upload or drag and drop
-              </p>
-              <p className="text-xs text-muted-foreground">
-                PNG, JPG up to 10MB
-              </p>
+              <div>
+                <p className="text-sm font-medium">Click to upload or drag and drop</p>
+                <p className="text-xs text-muted-foreground">PNG, JPG up to 10MB</p>
+              </div>
             </div>
           )}
         </div>
