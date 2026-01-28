@@ -19,15 +19,18 @@ export function ImageUpload({
 }: ImageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // ✅ hook is ALWAYS called (important)
+  // Call hook always
   const uploadHook = useCloudinaryUpload();
 
-  const [dragOver, setDragOver] = useState(false);
-
-  // ✅ render guard instead of conditional mount
+  // Render guard for permission
   if (!canUpload) return null;
 
+  // Safely destructure only if hook is truthy
+  if (!uploadHook) return null; // <-- added check here
+
   const { uploadImage, uploading } = uploadHook;
+
+  const [dragOver, setDragOver] = useState(false);
 
   const handleFileSelect = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
