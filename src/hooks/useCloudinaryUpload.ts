@@ -2,12 +2,9 @@ import { useState, useCallback } from "react";
 import ImageKit from "imagekit-javascript";
 import imageCompression from "browser-image-compression";
 
-const PUBLIC_KEY = "public_mFX/7mQzHpCgJmz9GpVHJIdSsMA=";
-const URL_ENDPOINT = "https://ik.imagekit.io/4rm3gcimn";
-
 const imagekit = new ImageKit({
-  publicKey: PUBLIC_KEY,
-  urlEndpoint: URL_ENDPOINT,
+  publicKey: import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY,
+  urlEndpoint: import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT,
 });
 
 export function useCloudinaryUpload() {
@@ -19,22 +16,34 @@ export function useCloudinaryUpload() {
     setError(null);
 
     try {
-      // Compress image before uploading
       const compressedFile = await imageCompression(file, {
-        maxSizeMB: 1,           // max size in MB
-        maxWidthOrHeight: 1920, // max width or height
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
         useWebWorker: true,
       });
 
-      const response = imagekit.upload({
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/imagekit-auth`
+      );
+
+      if (!res.ok) {
+        throw new Error(`Auth fetch failed: ${res.statusText}`);
+      }
+
+      const auth = await res.json();
+
+      const result = await imagekit.upload({
         file: compressedFile,
-        fileName: compressedFile.name,
-        folder: "/catalogue",
+        fileName: `${Date.now()}-${compressedFile.name}`,
+        token: auth.token,
+        signature: auth.signature,
+        expire: auth.expire,
       });
 
-      return response.url;
+      return result.url;
     } catch (err: any) {
-      setError(err.message);
+      console.error("ImageKit upload failed:", err);
+      setError(err?.message || "Upload failed");
       return null;
     } finally {
       setUploading(false);
@@ -45,6 +54,6 @@ export function useCloudinaryUpload() {
     uploadImage,
     uploading,
     error,
-    isConfigured: !!(PUBLIC_KEY && URL_ENDPOINT),
+    isConfigured: true,
   };
 }

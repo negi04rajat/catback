@@ -12,17 +12,11 @@ interface ImageUploadProps {
 
 export function ImageUpload({ value, onChange, maxImages = 5 }: ImageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { uploadImage, uploading, isConfigured } = useCloudinaryUpload();
+  const { uploadImage, uploading } = useCloudinaryUpload();
   const [dragOver, setDragOver] = useState(false);
 
   const handleFileSelect = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
-
-    if (!isConfigured) {
-      toast.error('Image upload is not configured yet');
-      return;
-    }
-
     const remainingSlots = maxImages - value.filter(Boolean).length;
     const filesToUpload = Array.from(files).slice(0, remainingSlots);
 
