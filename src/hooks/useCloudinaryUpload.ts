@@ -1,13 +1,8 @@
-import { useState, useCallback } from "react";
-import ImageKit from "imagekit-javascript";
+import { useState, useCallback, useRef } from "react";
 import imageCompression from "browser-image-compression";
 
-const imagekit = new ImageKit({
-  publicKey: import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY,
-  urlEndpoint: import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT,
-});
-
 export function useCloudinaryUpload() {
+  const imagekitRef = useRef<any>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,6 +11,15 @@ export function useCloudinaryUpload() {
     setError(null);
 
     try {
+      if (!imagekitRef.current) {
+        const ImageKit = (await import("imagekit-javascript")).default;
+
+        imagekitRef.current = new ImageKit({
+          publicKey: import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY,
+          urlEndpoint: import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT,
+        });
+      }
+
       const compressedFile = await imageCompression(file, {
         maxSizeMB: 1,
         maxWidthOrHeight: 1920,
@@ -32,7 +36,7 @@ export function useCloudinaryUpload() {
 
       const auth = await res.json();
 
-      const result = await imagekit.upload({
+      const result = await imagekitRef.current.upload({
         file: compressedFile,
         fileName: `${Date.now()}-${compressedFile.name}`,
         token: auth.token,
